@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://clg8mwer1172y"]
+[gd_scene load_steps=9 format=3 uid="uid://clg8mwer1172y"]
 
 [ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_b4sgw"]
+[ext_resource type="PackedScene" uid="uid://nn54g2x3xyxn" path="res://Objects/Plunger/plunger.tscn" id="2_ll87k"]
+[ext_resource type="PackedScene" uid="uid://ckjixkvrxpasv" path="res://Objects/Plunger/plunger_rope.tscn" id="3_31u4p"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_rkulr"]
 
@@ -34,6 +36,10 @@ shape = SubResource("RectangleShape2D_l35vg")
 [node name="Player" parent="Enities" instance=ExtResource("1_b4sgw")]
 position = Vector2(537, 498)
 can_double_jump = false
+
+[node name="Plunger" parent="Enities" instance=ExtResource("2_ll87k")]
+
+[node name="PlungerRope" parent="Enities" instance=ExtResource("3_31u4p")]
 
 [node name="Platform" type="StaticBody2D" parent="."]
 position = Vector2(1167, 683)

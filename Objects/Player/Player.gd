@@ -94,7 +94,7 @@ func _physics_process(delta):
 				tween.tween_property(plunger,"global_position", shoot_point.global_position,.15)
 				tween.tween_property(plunger,"global_position", global_position,.15)
 		else:
-			if aim_ray.is_colliding():
+			if plunging:
 				var dir_to_plunger = global_position.direction_to(plunger.global_position).normalized()
 				velocity = dir_to_plunger * 1000
 			tween.tween_property(plunger,"global_position", global_position,.15)
