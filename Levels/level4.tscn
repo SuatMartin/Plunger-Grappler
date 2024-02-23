@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bit58osj717ev"]
+
+[ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_qd42w"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_nfqat"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wxutc"]
+size = Vector2(2415, 189)
+
+[node name="Level4" type="Node2D"]
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(0, 488)
+
+[node name="FloorMesh" type="MeshInstance2D" parent="Floor"]
+modulate = Color(0.478431, 0.478431, 0.478431, 1)
+position = Vector2(577, 560.5)
+scale = Vector2(2418, 189)
+mesh = SubResource("QuadMesh_nfqat")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+position = Vector2(575.5, 560.5)
+shape = SubResource("RectangleShape2D_wxutc")
+
+[node name="Enities" type="Node2D" parent="."]
+position = Vector2(3, -18)
+
+[node name="Player" parent="Enities" instance=ExtResource("1_qd42w")]
+position = Vector2(537, 498)
+can_double_jump = false
