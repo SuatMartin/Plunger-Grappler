@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var JUMP_VELOCITY = -550.0
 @export var extra_fall_gravity_factor = 1.7
 @export var can_double_jump = true
+@export var push_force = 200
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity") * 1.2
@@ -20,19 +21,34 @@ var can_move = true
 var can_shoot = true
 var big_shot = false
 
+var plunging = false
+var plunger = null
+var plunger_rope = null
+
 @onready var variable_jump_timer = %VariableJumpTimer
 @onready var coyote_timer = %CoyoteTimer
 @onready var ground_check_ray = $GroundCheckRay
 @onready var shoot_point = %ShootPoint
 @onready var gun_root = $GunRoot
 @onready var fire_rate_timer = %FireRateTimer
+@onready var aim_ray = $GunRoot/AimRay
 
 func _ready():
+	plunger = get_tree().get_first_node_in_group("plunger")
+	plunger_rope = get_tree().get_first_node_in_group("plunger_rope")
+	
 	normal_gravity = gravity
 	fall_gravity = gravity * extra_fall_gravity_factor
 	current_speed = jog_speed
+	
 
 func _physics_process(delta):
+	#physics interaction
+	for i in get_slide_collision_count():
+		var c = get_slide_collision(i)
+		if c.get_collider() is RigidBody2D:
+			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
+	
 	gun_root.look_at(get_global_mouse_position())
 	
 	if ground_check_ray.is_colliding():
@@ -50,6 +66,9 @@ func _physics_process(delta):
 		else:
 			gravity = normal_gravity
 		velocity.y += gravity * delta
+		
+	if not plunging:
+		plunger.global_position = global_position
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and can_jump:
@@ -65,8 +84,21 @@ func _physics_process(delta):
 		can_shoot = false
 		fire_rate_timer.start()
 		var dir_to_mouse = global_position.direction_to(shoot_point.global_position).normalized()
-
-		print("bang")
+		var tween = create_tween()
+		
+		if !plunging:
+			if aim_ray.is_colliding():
+				tween.tween_property(plunger,"global_position", aim_ray.get_collision_point(),.15)
+				plunging = true
+			else:
+				tween.tween_property(plunger,"global_position", shoot_point.global_position,.15)
+				tween.tween_property(plunger,"global_position", global_position,.15)
+		else:
+			if aim_ray.is_colliding():
+				var dir_to_plunger = global_position.direction_to(plunger.global_position).normalized()
+				velocity = dir_to_plunger * 1000
+			tween.tween_property(plunger,"global_position", global_position,.15)
+			plunging = false
 		
 	#Handle Sprinting
 	if Input.is_action_pressed("sprint"):
@@ -86,6 +118,10 @@ func _physics_process(delta):
 
 	move_and_slide()
 
+
+func _process(delta):
+	plunger_rope.points[0] = global_position
+	plunger_rope.points[1] = plunger.global_position
 
 func _on_variable_jump_timer_timeout():
 	can_let_go_of_jump = true

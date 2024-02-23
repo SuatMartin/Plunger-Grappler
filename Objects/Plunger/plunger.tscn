@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://nn54g2x3xyxn"]
+
+[ext_resource type="Texture2D" uid="uid://cha0axgg5262a" path="res://icon.svg" id="1_2bteo"]
+[ext_resource type="Script" path="res://Objects/Plunger/plunger.gd" id="1_6mpo4"]
+
+[node name="Plunger" type="CharacterBody2D" groups=["plunger"]]
+script = ExtResource("1_6mpo4")
+
+[node name="PlungerSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.140625, 0.140625)
+texture = ExtResource("1_2bteo")
