@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3 uid="uid://cpuxg6ercyfm6"]
+
+[ext_resource type="Script" path="res://Objects/Player/Player.gd" id="1_8ht6t"]
+[ext_resource type="Texture2D" uid="uid://cha0axgg5262a" path="res://icon.svg" id="2_rjrgu"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k2srv"]
+radius = 37.0
+height = 110.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_qoyc2"]
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 2
+script = ExtResource("1_8ht6t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.59375, 0.844445)
+texture = ExtResource("2_rjrgu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_k2srv")
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="VariableJumpTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+process_callback = 0
+wait_time = 0.06
+one_shot = true
+
+[node name="CoyoteTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 0.07
+one_shot = true
+
+[node name="FireRateTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 0.1
+one_shot = true
+
+[node name="GroundCheckRay" type="RayCast2D" parent="."]
+target_position = Vector2(0, 70)
+
+[node name="GunRoot" type="Node2D" parent="."]
+
+[node name="ShootPoint" type="Marker2D" parent="GunRoot"]
+unique_name_in_owner = true
+position = Vector2(85, 0)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="GunRoot/ShootPoint"]
+position = Vector2(0, 9.53674e-07)
+scale = Vector2(8.00907, 8.00907)
+mesh = SubResource("SphereMesh_qoyc2")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+process_callback = 0
+position_smoothing_enabled = true
+drag_vertical_enabled = true
+
+[connection signal="timeout" from="Timers/VariableJumpTimer" to="." method="_on_variable_jump_timer_timeout"]
+[connection signal="timeout" from="Timers/CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
+[connection signal="timeout" from="Timers/FireRateTimer" to="." method="_on_fire_rate_timer_timeout"]
