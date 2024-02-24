@@ -58,9 +58,18 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("shoot"):
 			if not plunging:
 				if aim_ray.is_colliding():
-					plunging = true
-				# We clicked the mouse -> shoot()
-					plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
+					
+					if aim_ray.get_collider().is_in_group("movable_platform"):
+						var platform = aim_ray.get_collider()
+						
+						plunging = true
+						# We clicked the mouse -> shoot()
+						plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
+						platform.being_plunged = true
+					else:
+						plunging = true
+					# We clicked the mouse -> shoot()
+						plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
 				else:
 					plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
 					await get_tree().create_timer(.3).timeout

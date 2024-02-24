@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://clg8mwer1172y"]
+[gd_scene load_steps=9 format=3 uid="uid://clg8mwer1172y"]
 
 [ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_b4sgw"]
 [ext_resource type="PackedScene" uid="uid://cdbpqj2vwnhxu" path="res://Objects/Plunger/rope.tscn" id="2_4ok1u"]
+[ext_resource type="PackedScene" uid="uid://4poa8ekaxoyg" path="res://Objects/MovablePlatform/movable_platform.tscn" id="3_fm78e"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_rkulr"]
 
@@ -51,17 +52,7 @@ position = Vector2(7, 41)
 scale = Vector2(-260.247, 41.4331)
 mesh = SubResource("QuadMesh_rn38v")
 
-[node name="Platform2" type="StaticBody2D" parent="."]
-position = Vector2(804, 684)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
-position = Vector2(6, 42)
-shape = SubResource("RectangleShape2D_vxtwn")
-
-[node name="PlatformMesh" type="MeshInstance2D" parent="Platform2"]
-position = Vector2(7, 41)
-scale = Vector2(-260.247, 41.4331)
-mesh = SubResource("QuadMesh_rn38v")
+[node name="Platform2" parent="." instance=ExtResource("3_fm78e")]
 
 [node name="Wall" type="StaticBody2D" parent="."]
 position = Vector2(1417, 560)
