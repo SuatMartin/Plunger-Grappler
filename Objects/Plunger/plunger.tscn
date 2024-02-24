@@ -1,11 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://nn54g2x3xyxn"]
+[gd_scene load_steps=4 format=3 uid="uid://dmy18b6e8f6ab"]
 
-[ext_resource type="Texture2D" uid="uid://cha0axgg5262a" path="res://icon.svg" id="1_2bteo"]
 [ext_resource type="Script" path="res://Objects/Plunger/plunger.gd" id="1_6mpo4"]
+[ext_resource type="Texture2D" uid="uid://drga176m2xwpn" path="res://Art/ChainTest/hook.png" id="2_u3h3g"]
 
-[node name="Plunger" type="CharacterBody2D" groups=["plunger"]]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jhqnd"]
+radius = 4.0
+height = 40.0
+
+[node name="Plunger" type="Node2D"]
+z_index = 1
 script = ExtResource("1_6mpo4")
 
-[node name="PlungerSprite" type="Sprite2D" parent="."]
-scale = Vector2(0.140625, 0.140625)
-texture = ExtResource("1_2bteo")
+[node name="Plunger" type="CharacterBody2D" parent="." groups=["plunger"]]
+collision_layer = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="Plunger"]
+scale = Vector2(2, 2)
+texture = ExtResource("2_u3h3g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plunger"]
+position = Vector2(0, 9)
+shape = SubResource("CapsuleShape2D_jhqnd")

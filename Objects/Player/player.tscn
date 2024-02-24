@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpuxg6ercyfm6"]
+[gd_scene load_steps=6 format=3 uid="uid://cpuxg6ercyfm6"]
 
 [ext_resource type="Script" path="res://Objects/Player/Player.gd" id="1_8ht6t"]
 [ext_resource type="Texture2D" uid="uid://cha0axgg5262a" path="res://icon.svg" id="2_rjrgu"]
+[ext_resource type="PackedScene" uid="uid://dmy18b6e8f6ab" path="res://Objects/Plunger/plunger.tscn" id="3_1df17"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k2srv"]
 radius = 37.0
@@ -31,6 +32,10 @@ unique_name_in_owner = true
 wait_time = 0.1
 one_shot = true
 
+[node name="PlungerLaunchTimer" type="Timer" parent="Timers"]
+wait_time = 0.1
+one_shot = true
+
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.59375, 0.844445)
 texture = ExtResource("2_rjrgu")
@@ -45,7 +50,7 @@ target_position = Vector2(0, 70)
 
 [node name="ShootPoint" type="Marker2D" parent="GunRoot"]
 unique_name_in_owner = true
-position = Vector2(298, 0)
+position = Vector2(300, 0)
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="GunRoot/ShootPoint"]
 visible = false
@@ -54,7 +59,7 @@ scale = Vector2(8.00907, 8.00907)
 mesh = SubResource("SphereMesh_qoyc2")
 
 [node name="AimRay" type="RayCast2D" parent="GunRoot"]
-target_position = Vector2(300, 0)
+target_position = Vector2(350, 0)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
@@ -62,6 +67,9 @@ process_callback = 0
 position_smoothing_enabled = true
 drag_vertical_enabled = true
 
+[node name="PlungerRope" parent="." instance=ExtResource("3_1df17")]
+
 [connection signal="timeout" from="Timers/VariableJumpTimer" to="." method="_on_variable_jump_timer_timeout"]
 [connection signal="timeout" from="Timers/CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="Timers/FireRateTimer" to="." method="_on_fire_rate_timer_timeout"]
+[connection signal="timeout" from="Timers/PlungerLaunchTimer" to="." method="_on_plunger_launch_timer_timeout"]

@@ -1,5 +1,12 @@
 extends CharacterBody2D
 
+const JUMP_FORCE = 1550			# Force applied on jumping
+const MOVE_SPEED = 500			# Speed to walk with
+const MAX_SPEED = 2000			# Maximum speed the player is allowed to move
+const FRICTION_AIR = 0.95		# The friction while airborne
+const FRICTION_GROUND = 0.85	# The friction while on the ground
+
+
 @export var jog_speed = 300.0
 @export var sprint_speed = 600.0
 @export var acceleration = 35
@@ -8,9 +15,10 @@ extends CharacterBody2D
 @export var extra_fall_gravity_factor = 1.7
 @export var can_double_jump = true
 @export var push_force = 200
+@export var chain_pull = 500
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity") * 1.2
+var gravity = 60
 var normal_gravity = 0
 var fall_gravity = 0
 var current_speed = 300
@@ -19,11 +27,13 @@ var can_jump = true
 var left_edge = false
 var can_move = true
 var can_shoot = true
-var big_shot = false
+var is_being_launched = false
+var chain_velocity = Vector2.ZERO
+var dir_to_launch_point = Vector2.ZERO
 
 var plunging = false
 var plunger = null
-var plunger_rope = null
+var rope = null
 
 @onready var variable_jump_timer = %VariableJumpTimer
 @onready var coyote_timer = %CoyoteTimer
@@ -32,96 +42,117 @@ var plunger_rope = null
 @onready var gun_root = $GunRoot
 @onready var fire_rate_timer = %FireRateTimer
 @onready var aim_ray = $GunRoot/AimRay
+@onready var plunger_rope = $PlungerRope
+@onready var plunger_launch_timer = $Timers/PlungerLaunchTimer
 
 func _ready():
+	rope = get_tree().get_first_node_in_group("rope")
 	plunger = get_tree().get_first_node_in_group("plunger")
-	plunger_rope = get_tree().get_first_node_in_group("plunger_rope")
 	
 	normal_gravity = gravity
 	fall_gravity = gravity * extra_fall_gravity_factor
 	current_speed = jog_speed
 	
-
-func _physics_process(delta):
-	#physics interaction
-	for i in get_slide_collision_count():
-		var c = get_slide_collision(i)
-		if c.get_collider() is RigidBody2D:
-			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
-	
-	gun_root.look_at(get_global_mouse_position())
-	
-	if ground_check_ray.is_colliding():
-		can_jump = true
-		left_edge = false
-	else:
-		if left_edge == false:
-			coyote_timer.start()
-			left_edge = true
-		
-	# Add the gravity.
-	if not is_on_floor():
-		if velocity.y > 0:
-			gravity = fall_gravity
-		else:
-			gravity = normal_gravity
-		velocity.y += gravity * delta
-		
-	if not plunging:
-		plunger.global_position = global_position
-
-	# Handle jump.
-	if Input.is_action_just_pressed("jump") and can_jump:
-		can_let_go_of_jump = false
-		variable_jump_timer.start()
-		velocity.y = JUMP_VELOCITY
-		can_double_jump = false
-		
-	if Input.is_action_just_released("jump") and !is_on_floor() and can_let_go_of_jump and velocity.y < 0:
-		velocity.y = move_toward(velocity.y, 0, 200)
-	
-	if Input.is_action_just_pressed("shoot") and can_shoot:
-		can_shoot = false
-		fire_rate_timer.start()
-		var dir_to_mouse = global_position.direction_to(shoot_point.global_position).normalized()
-		var tween = create_tween()
-		
-		if !plunging:
-			if aim_ray.is_colliding():
-				tween.tween_property(plunger,"global_position", aim_ray.get_collision_point(),.15)
-				plunging = true
+func _input(event: InputEvent) -> void:
+	if event is InputEvent:
+		if event.is_action_pressed("shoot"):
+			if not plunging:
+				if aim_ray.is_colliding():
+					plunging = true
+				# We clicked the mouse -> shoot()
+					plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
+				else:
+					plunger_rope.shoot(global_position.direction_to(shoot_point.global_position))
+					await get_tree().create_timer(.3).timeout
+					plunger_rope.release()
 			else:
-				tween.tween_property(plunger,"global_position", shoot_point.global_position,.15)
-				tween.tween_property(plunger,"global_position", global_position,.15)
-		else:
+				dir_to_launch_point = global_position.direction_to(plunger.global_position)
+				chain_pull = 700
+				plunger_launch_timer.start()
+				
+				plunging = false
+				plunger_rope.release()
+				is_being_launched = true
+				
+		if event.is_action_pressed("release"):
 			if plunging:
-				var dir_to_plunger = global_position.direction_to(plunger.global_position).normalized()
-				velocity = dir_to_plunger * 1000
-			tween.tween_property(plunger,"global_position", global_position,.15)
-			plunging = false
+				plunger_rope.release()
+				plunging = false
+				
+		#else:
+			## We released the mouse -> release()
+
+func _physics_process(_delta: float) -> void:
+	gun_root.look_at(get_global_mouse_position())
+	aim_ray.look_at(shoot_point.global_position)
+	
+	# Walking
+	var walk = (Input.get_action_strength("right") - Input.get_action_strength("left")) * MOVE_SPEED
+
+	# Falling
+	velocity.y += gravity
+
+	# Hook physics
+	if plunger_rope.hooked:
 		
-	#Handle Sprinting
-	if Input.is_action_pressed("sprint"):
-		current_speed = sprint_speed
-	if Input.is_action_just_released("sprint"):
-		current_speed = jog_speed
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction = Input.get_axis("left", "right")
-	if can_move:
-		velocity.x = move_toward(velocity.x,direction * current_speed, acceleration)
-	elif !can_move:
-		velocity.x = move_toward(velocity.x, 0, 5)
+		# `to_local($Chain.tip).normalized()` is the direction that the chain is pulling
+		if global_position.distance_to(plunger_rope.plunger.global_position) > 400:
+			chain_pull = 200
+			chain_velocity = to_local(plunger_rope.plunger.global_position).normalized() * chain_pull
+			if chain_velocity.y > 0:
+				# Pulling down isn't as strong
+				chain_velocity.y *= 0.55
+			else:
+				# Pulling up is stronger
+				chain_velocity.y *= 1.65
+			if sign(chain_velocity.x) != sign(walk):
+				# if we are trying to walk in a different
+				# direction than the chain is pulling
+				# reduce its pull
+				chain_velocity.x *= 0.7
+		else:
+			# Not hooked -> no chain velocity
+			chain_pull = 100
+			chain_velocity = Vector2(0,0)
 	else:
-		velocity.x = move_toward(velocity.x, 0, acceleration)
+		chain_velocity = Vector2(0,0)
+	
+	velocity += chain_velocity
 
+	velocity.x += walk		# apply the walking
 	move_and_slide()
+	velocity.x -= walk		# take away the walk speed again
+	# ^ This is done so we don't build up walk speed over time
+	
+	if is_being_launched:
+		velocity += dir_to_launch_point * (chain_pull * 5)
 
+	# Manage friction and refresh jump and stuff
+	velocity.y = clamp(velocity.y, -MAX_SPEED, MAX_SPEED)	# Make sure we are in our limits
+	velocity.x = clamp(velocity.x, -MAX_SPEED, MAX_SPEED)
+	var grounded = is_on_floor()
+	if grounded:
+		velocity.x *= FRICTION_GROUND	# Apply friction only on x (we are not moving on y anyway)
+		can_jump = true 				# We refresh our air-jump
+		if velocity.y >= 5:		# Keep the y-velocity small such that
+			velocity.y = 5		# gravity doesn't make this number huge
+	elif is_on_ceiling() and velocity.y <= -5:	# Same on ceilings
+		velocity.y = -5
 
-func _process(delta):
-	plunger_rope.points[0] = global_position
-	plunger_rope.points[1] = plunger.global_position
+	# Apply air friction
+	if !grounded:
+		velocity.x *= FRICTION_AIR
+		if velocity.y > 0:
+			velocity.y *= FRICTION_AIR
+
+	# Jumping
+	if Input.is_action_just_pressed("jump"):
+		if grounded:
+			velocity.y = -JUMP_FORCE	# Apply the jump-force
+		elif can_jump:
+			can_jump = false	# Used air-jump
+			velocity.y = -JUMP_FORCE
+
 
 func _on_variable_jump_timer_timeout():
 	can_let_go_of_jump = true
@@ -134,4 +165,8 @@ func _on_coyote_timer_timeout():
 
 func _on_fire_rate_timer_timeout():
 	can_shoot = true
+	pass # Replace with function body.
+
+func _on_plunger_launch_timer_timeout():
+	is_being_launched = false
 	pass # Replace with function body.
