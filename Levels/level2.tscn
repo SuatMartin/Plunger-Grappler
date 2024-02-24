@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://duwa4mlvdagv4"]
+[gd_scene load_steps=9 format=3 uid="uid://duwa4mlvdagv4"]
 
 [ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_lu1d7"]
+[ext_resource type="Script" path="res://Levels/Platform.gd" id="2_t0x81"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_0btwh"]
 
@@ -41,12 +42,25 @@ can_double_jump = false
 
 [node name="Platform" type="StaticBody2D" parent="."]
 position = Vector2(844, 586)
+script = ExtResource("2_t0x81")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
 position = Vector2(6, 42)
 shape = SubResource("RectangleShape2D_cptpn")
 
 [node name="PlatformMesh" type="MeshInstance2D" parent="Platform"]
+position = Vector2(7, 41)
+scale = Vector2(-260.247, 41.4331)
+mesh = SubResource("QuadMesh_vtqdk")
+
+[node name="Platform moves here" type="StaticBody2D" parent="Platform"]
+position = Vector2(3, 224)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/Platform moves here"]
+position = Vector2(6, 42)
+shape = SubResource("RectangleShape2D_cptpn")
+
+[node name="PlatformMesh" type="MeshInstance2D" parent="Platform/Platform moves here"]
 position = Vector2(7, 41)
 scale = Vector2(-260.247, 41.4331)
 mesh = SubResource("QuadMesh_vtqdk")
@@ -64,18 +78,6 @@ position = Vector2(52, -4)
 rotation = -1.5708
 scale = Vector2(-261.496, 39.1027)
 mesh = SubResource("QuadMesh_hkvsd")
-
-[node name="Platform moves here" type="StaticBody2D" parent="."]
-position = Vector2(847, 810)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform moves here"]
-position = Vector2(6, 42)
-shape = SubResource("RectangleShape2D_cptpn")
-
-[node name="PlatformMesh" type="MeshInstance2D" parent="Platform moves here"]
-position = Vector2(7, 41)
-scale = Vector2(-260.247, 41.4331)
-mesh = SubResource("QuadMesh_vtqdk")
 
 [node name="Platform2" type="StaticBody2D" parent="."]
 position = Vector2(564, 761)

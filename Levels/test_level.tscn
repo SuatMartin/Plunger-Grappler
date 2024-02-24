@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://clg8mwer1172y"]
+[gd_scene load_steps=8 format=3 uid="uid://clg8mwer1172y"]
 
 [ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_b4sgw"]
+[ext_resource type="Script" path="res://Levels/Wall2.gd" id="2_m8fmr"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_rkulr"]
 
@@ -75,6 +76,7 @@ mesh = SubResource("QuadMesh_cgpfg")
 
 [node name="Wall2" type="StaticBody2D" parent="."]
 position = Vector2(410, 538)
+script = ExtResource("2_m8fmr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2"]
 position = Vector2(51, -6)
