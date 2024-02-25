@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7xq3uvwnhub6"]
+
+[ext_resource type="Texture2D" uid="uid://cha0axgg5262a" path="res://icon.svg" id="1_kbirc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_smgpi"]
+font_size = 100
+font_color = Color(0, 0.513726, 0.207843, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1153.0
+offset_bottom = 647.0
+color = Color(0.239216, 0.235294, 0.368627, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 216.0
+offset_top = 65.0
+offset_right = 999.0
+offset_bottom = 202.0
+text = "Paused"
+label_settings = SubResource("LabelSettings_smgpi")
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = 51.0
+offset_top = 83.0
+offset_right = 179.0
+offset_bottom = 211.0
+texture = ExtResource("1_kbirc")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 418.0
+offset_top = 252.0
+offset_right = 796.0
+offset_bottom = 356.0
+theme_override_font_sizes/font_size = 70
+text = "Resume"
