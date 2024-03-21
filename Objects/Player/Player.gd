@@ -152,6 +152,9 @@ func _physics_process(_delta: float) -> void:
 		elif can_jump:
 			can_jump = false	# Used air-jump
 			velocity.y = -JUMP_FORCE
+			
+	if position.y > 2000:
+		get_tree().change_scene_to_file("res://Levels/GameOver.tscn")
 
 
 func _on_variable_jump_timer_timeout():

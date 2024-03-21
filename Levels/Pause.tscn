@@ -15,11 +15,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 1153.0
 offset_bottom = 647.0
 color = Color(0.239216, 0.235294, 0.368627, 1)
 
 [node name="Label" type="Label" parent="."]
+layout_mode = 0
 offset_left = 216.0
 offset_top = 65.0
 offset_right = 999.0
@@ -29,6 +31,7 @@ label_settings = SubResource("LabelSettings_smgpi")
 horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
 offset_left = 51.0
 offset_top = 83.0
 offset_right = 179.0
@@ -36,6 +39,7 @@ offset_bottom = 211.0
 texture = ExtResource("1_kbirc")
 
 [node name="Button" type="Button" parent="."]
+layout_mode = 0
 offset_left = 418.0
 offset_top = 252.0
 offset_right = 796.0

@@ -1,7 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://bwdt6boft6g5h"]
+[gd_scene load_steps=19 format=3 uid="uid://bwdt6boft6g5h"]
 
 [ext_resource type="PackedScene" uid="uid://cpuxg6ercyfm6" path="res://Objects/Player/player.tscn" id="1_httnd"]
 [ext_resource type="Texture2D" uid="uid://bv607ps7bmku2" path="res://Art/Dungeon Tiles #1 64x64.png" id="2_3y8br"]
+[ext_resource type="Script" path="res://Levels/Win.gd" id="2_7wkxr"]
+[ext_resource type="Script" path="res://Levels/Enemy.gd" id="2_8digk"]
+[ext_resource type="PackedScene" uid="uid://cdbpqj2vwnhxu" path="res://Objects/Plunger/rope.tscn" id="3_rap7w"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_oenvd"]
 
@@ -1667,10 +1670,16 @@ texture = ExtResource("2_3y8br")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_oa6qy")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s4l5i"]
+size = Vector2(279, 52)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_13dug"]
 size = Vector2(75, 41)
 
 [sub_resource type="QuadMesh" id="QuadMesh_b3kek"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dkkec"]
+radius = 146.055
 
 [node name="Level5" type="Node2D"]
 
@@ -1687,33 +1696,14 @@ mesh = SubResource("QuadMesh_oenvd")
 position = Vector2(575.5, 560.5)
 shape = SubResource("RectangleShape2D_6lfvi")
 
-[node name="Enities" type="Node2D" parent="."]
-position = Vector2(3, -18)
-
-[node name="Player" parent="Enities" instance=ExtResource("1_httnd")]
-position = Vector2(537, 498)
-can_double_jump = false
-
 [node name="Platform" type="StaticBody2D" parent="."]
-position = Vector2(613, 70)
+position = Vector2(380, -429)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
 position = Vector2(6, 42)
 shape = SubResource("RectangleShape2D_bqcxl")
 
 [node name="PlatformMesh" type="MeshInstance2D" parent="Platform"]
-position = Vector2(7, 41)
-scale = Vector2(-260.247, 41.4331)
-mesh = SubResource("QuadMesh_rwyym")
-
-[node name="movefromhere" type="StaticBody2D" parent="Platform"]
-position = Vector2(4, -649)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/movefromhere"]
-position = Vector2(6, 42)
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="PlatformMesh" type="MeshInstance2D" parent="Platform/movefromhere"]
 position = Vector2(7, 41)
 scale = Vector2(-260.247, 41.4331)
 mesh = SubResource("QuadMesh_rwyym")
@@ -1725,25 +1715,13 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-65544, 0, 0, -8, 0, 1, 65528, 0, 2, 131064, 0, 3, -65543, 65536, 0, -7, 65536, 1, 65529, 65536, 2, 131065, 65536, 3, -65542, 131072, 0, -6, 131072, 1, 65530, 131072, 2, 131066, 131072, 3, -65541, 196608, 0, -5, 196608, 1, 65531, 196608, 2, 131067, 196608, 3, -65540, 262144, 0, -4, 262144, 1, 65532, 262144, 2, 131068, 262144, 3, -65539, 0, 0, -3, 0, 1, 65533, 0, 2, 131069, 0, 3, -65538, 65536, 0, -2, 65536, 1, 65534, 65536, 2, 131070, 65536, 3, -65537, 131072, 0, -1, 131072, 1, 65535, 131072, 2, 131071, 131072, 3, -131072, 196608, 0, -65536, 196608, 1, 0, 196608, 2, 65536, 196608, 3, -131071, 262144, 0, -65535, 262144, 1, 1, 262144, 2, 65537, 262144, 3, -131070, 0, 0, -65534, 0, 1, 2, 0, 2, 65538, 0, 3, -131069, 0, 0, -65533, 0, 1, 3, 0, 2, 65539, 0, 3, -131068, 65536, 0, -65532, 65536, 1, 4, 65536, 2, 65540, 65536, 3, -131067, 131072, 0, -65531, 131072, 1, 5, 131072, 2, 65541, 131072, 3, -131066, 196608, 0, -65530, 196608, 1, 6, 196608, 2, 65542, 196608, 3, -131065, 262144, 0, -65529, 262144, 1, 7, 262144, 2, 65543, 262144, 3, -131064, 1048576, 0, -65528, 1048576, 1, 8, 1048576, 2, 65544, 1048576, 7, 131080, 1048576, 8, 131076, 524288, 4, 131077, 589824, 4, 131078, 655360, 4, 131079, 720896, 4, 131072, 524288, 4, 131073, 589824, 4, 131074, 655360, 4, 131075, 720896, 4, 196604, 524288, 4, 196605, 589824, 4, 196606, 655360, 4, 196607, 720896, 4, 196600, 524288, 4, 196601, 589824, 4, 196602, 655360, 4, 196603, 720896, 4, -65545, 983040, 0, -9, 983040, 1, 65527, 983040, 2, 131063, 983040, 7, 196599, 983040, 8)
 
 [node name="Platform2" type="StaticBody2D" parent="."]
-position = Vector2(1796, -1268)
+position = Vector2(823, -2218)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
 position = Vector2(6, 42)
 shape = SubResource("RectangleShape2D_bqcxl")
 
 [node name="PlatformMesh" type="MeshInstance2D" parent="Platform2"]
-position = Vector2(7, 41)
-scale = Vector2(-260.247, 41.4331)
-mesh = SubResource("QuadMesh_rwyym")
-
-[node name="movetohere" type="StaticBody2D" parent="Platform2"]
-position = Vector2(-12, -923)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2/movetohere"]
-position = Vector2(6, 42)
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="PlatformMesh" type="MeshInstance2D" parent="Platform2/movetohere"]
 position = Vector2(7, 41)
 scale = Vector2(-260.247, 41.4331)
 mesh = SubResource("QuadMesh_rwyym")
@@ -1755,7 +1733,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-65544, 0, 0, -8, 0, 1, 65528, 0, 2, 131064, 0, 3, -65543, 65536, 0, -7, 65536, 1, 65529, 65536, 2, 131065, 65536, 3, -65542, 131072, 0, -6, 131072, 1, 65530, 131072, 2, 131066, 131072, 3, -65541, 196608, 0, -5, 196608, 1, 65531, 196608, 2, 131067, 196608, 3, -65540, 262144, 0, -4, 262144, 1, 65532, 262144, 2, 131068, 262144, 3, -65539, 0, 0, -3, 0, 1, 65533, 0, 2, 131069, 0, 3, -65538, 65536, 0, -2, 65536, 1, 65534, 65536, 2, 131070, 65536, 3, -65537, 131072, 0, -1, 131072, 1, 65535, 131072, 2, 131071, 131072, 3, -131072, 196608, 0, -65536, 196608, 1, 0, 196608, 2, 65536, 196608, 3, -131071, 262144, 0, -65535, 262144, 1, 1, 262144, 2, 65537, 262144, 3, -131070, 0, 0, -65534, 0, 1, 2, 0, 2, 65538, 0, 3, -131069, 0, 0, -65533, 0, 1, 3, 0, 2, 65539, 0, 3, -131068, 65536, 0, -65532, 65536, 1, 4, 65536, 2, 65540, 65536, 3, -131067, 131072, 0, -65531, 131072, 1, 5, 131072, 2, 65541, 131072, 3, -131066, 196608, 0, -65530, 196608, 1, 6, 196608, 2, 65542, 196608, 3, -131065, 262144, 0, -65529, 262144, 1, 7, 262144, 2, 65543, 262144, 3, -131064, 1048576, 0, -65528, 1048576, 1, 8, 1048576, 2, 65544, 1048576, 7, 131080, 1048576, 8, 131076, 524288, 4, 131077, 589824, 4, 131078, 655360, 4, 131079, 720896, 4, 131072, 524288, 4, 131073, 589824, 4, 131074, 655360, 4, 131075, 720896, 4, 196604, 524288, 4, 196605, 589824, 4, 196606, 655360, 4, 196607, 720896, 4, 196600, 524288, 4, 196601, 589824, 4, 196602, 655360, 4, 196603, 720896, 4, -65545, 983040, 0, -9, 983040, 1, 65527, 983040, 2, 131063, 983040, 7, 196599, 983040, 8)
 
 [node name="Wall" type="StaticBody2D" parent="."]
-position = Vector2(-551, 496)
+position = Vector2(1390, 458)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
 position = Vector2(51, -6)
@@ -1768,20 +1746,6 @@ rotation = -1.5708
 scale = Vector2(-261.496, 39.1027)
 mesh = SubResource("QuadMesh_8e7om")
 
-[node name="movefromhere" type="StaticBody2D" parent="Wall"]
-position = Vector2(2091, -5)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall/movefromhere"]
-position = Vector2(51, -6)
-rotation = -1.5708
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="WallMesh" type="MeshInstance2D" parent="Wall/movefromhere"]
-position = Vector2(52, -4)
-rotation = -1.5708
-scale = Vector2(-261.496, 39.1027)
-mesh = SubResource("QuadMesh_8e7om")
-
 [node name="TileMap" type="TileMap" parent="Wall"]
 position = Vector2(59, -7)
 tile_set = SubResource("TileSet_bqurx")
@@ -1789,7 +1753,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-524290, 0, 0, -458754, 0, 1, -393218, 0, 2, -327682, 0, 1, -524289, 65536, 0, -458753, 65536, 1, -393217, 65536, 2, -327681, 65536, 1, -589824, 131072, 0, -524288, 131072, 1, -458752, 131072, 2, -393216, 131072, 1, -589823, 1048576, 0, -524287, 1048576, 1, -458751, 1048576, 2, -393215, 1048576, 3, -327679, 1048576, 4, -262143, 1048576, 5, -196607, 1048576, 6, -131071, 1048576, 7, -65535, 1048576, 3, 1, 1048576, 4, 65537, 1048576, 5, 131073, 1048576, 2, 196609, 1048576, 3, 262145, 1048576, 4, 327681, 1048576, 5, 393217, 1048576, 6, 458753, 1048576, 7, 524289, 1048576, 8, -262146, 0, 2, -196610, 0, 3, -262145, 65536, 2, -196609, 65536, 3, -327680, 131072, 2, -262144, 131072, 3, -131074, 0, 1, -65538, 0, 2, -2, 0, 3, -131073, 65536, 1, -65537, 65536, 2, -1, 65536, 3, -196608, 131072, 1, -131072, 131072, 2, -65536, 131072, 3, 65534, 0, 1, 131070, 0, 2, 196606, 0, 3, 65535, 65536, 1, 131071, 65536, 2, 196607, 65536, 3, 0, 131072, 1, 65536, 131072, 2, 131072, 131072, 3, 262142, 0, 1, 327678, 0, 2, 393214, 0, 3, 262143, 65536, 1, 327679, 65536, 2, 393215, 65536, 3, 196608, 131072, 1, 262144, 131072, 2, 327680, 131072, 3, 458750, 0, 1, 524286, 0, 2, 589822, 524288, 4, 458751, 65536, 1, 524287, 65536, 2, 589823, 589824, 4, 393216, 131072, 1, 458752, 131072, 2, 524288, 655360, 4, 65533, 983040, 4, 131069, 983040, 1, 196605, 983040, 2, 262141, 983040, 3, 327677, 983040, 4, 393213, 983040, 5, 458749, 983040, 6, 524285, 983040, 7, 589821, 983040, 8, -524291, 983040, 0, -458755, 983040, 1, -393219, 983040, 2, -327683, 983040, 3, -262147, 983040, 4, -196611, 983040, 5, -131075, 983040, 6, -65539, 983040, 2, -3, 983040, 3)
 
 [node name="Wall2" type="StaticBody2D" parent="."]
-position = Vector2(318, -3105)
+position = Vector2(2124, -3268)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2"]
 position = Vector2(51, -6)
@@ -1797,20 +1761,6 @@ rotation = -1.5708
 shape = SubResource("RectangleShape2D_bqcxl")
 
 [node name="WallMesh" type="MeshInstance2D" parent="Wall2"]
-position = Vector2(52, -4)
-rotation = -1.5708
-scale = Vector2(-261.496, 39.1027)
-mesh = SubResource("QuadMesh_8e7om")
-
-[node name="movetohere" type="StaticBody2D" parent="Wall2"]
-position = Vector2(2147, -24)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2/movetohere"]
-position = Vector2(51, -6)
-rotation = -1.5708
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="WallMesh" type="MeshInstance2D" parent="Wall2/movetohere"]
 position = Vector2(52, -4)
 rotation = -1.5708
 scale = Vector2(-261.496, 39.1027)
@@ -1824,6 +1774,7 @@ layer_0/tile_data = PackedInt32Array(-524290, 0, 0, -458754, 0, 1, -393218, 0, 2
 
 [node name="End" type="StaticBody2D" parent="."]
 position = Vector2(2861, -3812)
+script = ExtResource("2_7wkxr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="End"]
 position = Vector2(6, 42)
@@ -1840,8 +1791,16 @@ tile_set = SubResource("TileSet_6wi0a")
 format = 2
 layer_0/tile_data = PackedInt32Array(-65544, 0, 0, -8, 0, 1, 65528, 0, 2, 131064, 0, 3, -65543, 65536, 0, -7, 65536, 1, 65529, 65536, 2, 131065, 65536, 3, -65542, 131072, 0, -6, 131072, 1, 65530, 131072, 2, 131066, 131072, 3, -65541, 196608, 0, -5, 196608, 1, 65531, 196608, 2, 131067, 196608, 3, -65540, 262144, 0, -4, 262144, 1, 65532, 262144, 2, 131068, 262144, 3, -65539, 0, 0, -3, 0, 1, 65533, 0, 2, 131069, 0, 3, -65538, 65536, 0, -2, 65536, 1, 65534, 65536, 2, 131070, 65536, 3, -65537, 131072, 0, -1, 131072, 1, 65535, 131072, 2, 131071, 131072, 3, -131072, 196608, 0, -65536, 196608, 1, 0, 196608, 2, 65536, 196608, 3, -131071, 262144, 0, -65535, 262144, 1, 1, 262144, 2, 65537, 262144, 3, -131070, 0, 0, -65534, 0, 1, 2, 0, 2, 65538, 0, 3, -131069, 0, 0, -65533, 0, 1, 3, 0, 2, 65539, 0, 3, -131068, 65536, 0, -65532, 65536, 1, 4, 65536, 2, 65540, 65536, 3, -131067, 131072, 0, -65531, 131072, 1, 5, 131072, 2, 65541, 131072, 3, -131066, 196608, 0, -65530, 196608, 1, 6, 196608, 2, 65542, 196608, 3, -131065, 262144, 0, -65529, 262144, 1, 7, 262144, 2, 65543, 262144, 3, -131064, 1048576, 0, -65528, 1048576, 1, 8, 1048576, 2, 65544, 1048576, 7, 131080, 1048576, 8, 131076, 524288, 4, 131077, 589824, 4, 131078, 655360, 4, 131079, 720896, 4, 131072, 524288, 4, 131073, 589824, 4, 131074, 655360, 4, 131075, 720896, 4, 196604, 524288, 4, 196605, 589824, 4, 196606, 655360, 4, 196607, 720896, 4, 196600, 524288, 4, 196601, 589824, 4, 196602, 655360, 4, 196603, 720896, 4, -65545, 983040, 0, -9, 983040, 1, 65527, 983040, 2, 131063, 983040, 7, 196599, 983040, 8)
 
+[node name="Area2D" type="Area2D" parent="End"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="End/Area2D"]
+position = Vector2(6.5, -16)
+shape = SubResource("RectangleShape2D_s4l5i")
+
 [node name="Wall3" type="StaticBody2D" parent="."]
-position = Vector2(-616, -1528)
+position = Vector2(199, -1583)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall3"]
 position = Vector2(51, -6)
@@ -1854,20 +1813,6 @@ rotation = -1.5708
 scale = Vector2(-261.496, 39.1027)
 mesh = SubResource("QuadMesh_8e7om")
 
-[node name="movetohere" type="StaticBody2D" parent="Wall3"]
-position = Vector2(1764, -24)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall3/movetohere"]
-position = Vector2(51, -6)
-rotation = -1.5708
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="WallMesh" type="MeshInstance2D" parent="Wall3/movetohere"]
-position = Vector2(52, -4)
-rotation = -1.5708
-scale = Vector2(-261.496, 39.1027)
-mesh = SubResource("QuadMesh_8e7om")
-
 [node name="TileMap" type="TileMap" parent="Wall3"]
 position = Vector2(59, -7)
 tile_set = SubResource("TileSet_bqurx")
@@ -1875,7 +1820,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-524290, 0, 0, -458754, 0, 1, -393218, 0, 2, -327682, 0, 1, -524289, 65536, 0, -458753, 65536, 1, -393217, 65536, 2, -327681, 65536, 1, -589824, 131072, 0, -524288, 131072, 1, -458752, 131072, 2, -393216, 131072, 1, -589823, 1048576, 0, -524287, 1048576, 1, -458751, 1048576, 2, -393215, 1048576, 3, -327679, 1048576, 4, -262143, 1048576, 5, -196607, 1048576, 6, -131071, 1048576, 7, -65535, 1048576, 3, 1, 1048576, 4, 65537, 1048576, 5, 131073, 1048576, 2, 196609, 1048576, 3, 262145, 1048576, 4, 327681, 1048576, 5, 393217, 1048576, 6, 458753, 1048576, 7, 524289, 1048576, 8, -262146, 0, 2, -196610, 0, 3, -262145, 65536, 2, -196609, 65536, 3, -327680, 131072, 2, -262144, 131072, 3, -131074, 0, 1, -65538, 0, 2, -2, 0, 3, -131073, 65536, 1, -65537, 65536, 2, -1, 65536, 3, -196608, 131072, 1, -131072, 131072, 2, -65536, 131072, 3, 65534, 0, 1, 131070, 0, 2, 196606, 0, 3, 65535, 65536, 1, 131071, 65536, 2, 196607, 65536, 3, 0, 131072, 1, 65536, 131072, 2, 131072, 131072, 3, 262142, 0, 1, 327678, 0, 2, 393214, 0, 3, 262143, 65536, 1, 327679, 65536, 2, 393215, 65536, 3, 196608, 131072, 1, 262144, 131072, 2, 327680, 131072, 3, 458750, 0, 1, 524286, 0, 2, 589822, 524288, 4, 458751, 65536, 1, 524287, 65536, 2, 589823, 589824, 4, 393216, 131072, 1, 458752, 131072, 2, 524288, 655360, 4, 65533, 983040, 4, 131069, 983040, 1, 196605, 983040, 2, 262141, 983040, 3, 327677, 983040, 4, 393213, 983040, 5, 458749, 983040, 6, 524285, 983040, 7, 589821, 983040, 8, -524291, 983040, 0, -458755, 983040, 1, -393219, 983040, 2, -327683, 983040, 3, -262147, 983040, 4, -196611, 983040, 5, -131075, 983040, 6, -65539, 983040, 2, -3, 983040, 3)
 
 [node name="Wall4" type="StaticBody2D" parent="."]
-position = Vector2(2151, -2608)
+position = Vector2(1534, -2682)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall4"]
 position = Vector2(51, -6)
@@ -1888,20 +1833,6 @@ rotation = -1.5708
 scale = Vector2(-261.496, 39.1027)
 mesh = SubResource("QuadMesh_8e7om")
 
-[node name="movefromhere" type="StaticBody2D" parent="Wall4"]
-position = Vector2(-1470, -11)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall4/movefromhere"]
-position = Vector2(51, -6)
-rotation = -1.5708
-shape = SubResource("RectangleShape2D_bqcxl")
-
-[node name="WallMesh" type="MeshInstance2D" parent="Wall4/movefromhere"]
-position = Vector2(52, -4)
-rotation = -1.5708
-scale = Vector2(-261.496, 39.1027)
-mesh = SubResource("QuadMesh_8e7om")
-
 [node name="TileMap" type="TileMap" parent="Wall4"]
 position = Vector2(59, -7)
 tile_set = SubResource("TileSet_bqurx")
@@ -1909,7 +1840,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-524290, 0, 0, -458754, 0, 1, -393218, 0, 2, -327682, 0, 1, -524289, 65536, 0, -458753, 65536, 1, -393217, 65536, 2, -327681, 65536, 1, -589824, 131072, 0, -524288, 131072, 1, -458752, 131072, 2, -393216, 131072, 1, -589823, 1048576, 0, -524287, 1048576, 1, -458751, 1048576, 2, -393215, 1048576, 3, -327679, 1048576, 4, -262143, 1048576, 5, -196607, 1048576, 6, -131071, 1048576, 7, -65535, 1048576, 3, 1, 1048576, 4, 65537, 1048576, 5, 131073, 1048576, 2, 196609, 1048576, 3, 262145, 1048576, 4, 327681, 1048576, 5, 393217, 1048576, 6, 458753, 1048576, 7, 524289, 1048576, 8, -262146, 0, 2, -196610, 0, 3, -262145, 65536, 2, -196609, 65536, 3, -327680, 131072, 2, -262144, 131072, 3, -131074, 0, 1, -65538, 0, 2, -2, 0, 3, -131073, 65536, 1, -65537, 65536, 2, -1, 65536, 3, -196608, 131072, 1, -131072, 131072, 2, -65536, 131072, 3, 65534, 0, 1, 131070, 0, 2, 196606, 0, 3, 65535, 65536, 1, 131071, 65536, 2, 196607, 65536, 3, 0, 131072, 1, 65536, 131072, 2, 131072, 131072, 3, 262142, 0, 1, 327678, 0, 2, 393214, 0, 3, 262143, 65536, 1, 327679, 65536, 2, 393215, 65536, 3, 196608, 131072, 1, 262144, 131072, 2, 327680, 131072, 3, 458750, 0, 1, 524286, 0, 2, 589822, 524288, 4, 458751, 65536, 1, 524287, 65536, 2, 589823, 589824, 4, 393216, 131072, 1, 458752, 131072, 2, 524288, 655360, 4, 65533, 983040, 4, 131069, 983040, 1, 196605, 983040, 2, 262141, 983040, 3, 327677, 983040, 4, 393213, 983040, 5, 458749, 983040, 6, 524285, 983040, 7, 589821, 983040, 8, -524291, 983040, 0, -458755, 983040, 1, -393219, 983040, 2, -327683, 983040, 3, -262147, 983040, 4, -196611, 983040, 5, -131075, 983040, 6, -65539, 983040, 2, -3, 983040, 3)
 
 [node name="Platform4" type="StaticBody2D" parent="."]
-position = Vector2(1114, -89)
+position = Vector2(919, -51)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
 position = Vector2(6, 42)
@@ -1922,6 +1853,7 @@ mesh = SubResource("QuadMesh_rwyym")
 
 [node name="Enemy4" type="StaticBody2D" parent="Platform4"]
 position = Vector2(27, -56)
+script = ExtResource("2_8digk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4/Enemy4"]
 position = Vector2(62, 46)
@@ -1931,6 +1863,15 @@ shape = SubResource("RectangleShape2D_13dug")
 position = Vector2(62, 46)
 scale = Vector2(-78.2983, 41.4331)
 mesh = SubResource("QuadMesh_b3kek")
+
+[node name="Area2D" type="Area2D" parent="Platform4/Enemy4"]
+position = Vector2(63, -207)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4/Enemy4/Area2D"]
+position = Vector2(2, 259)
+shape = SubResource("CircleShape2D_dkkec")
 
 [node name="TileMap" type="TileMap" parent="Platform4"]
 position = Vector2(5, 43)
@@ -1959,7 +1900,8 @@ format = 2
 layer_0/tile_data = PackedInt32Array(-524290, 0, 0, -458754, 0, 1, -393218, 0, 2, -327682, 0, 1, -524289, 65536, 0, -458753, 65536, 1, -393217, 65536, 2, -327681, 65536, 1, -589824, 131072, 0, -524288, 131072, 1, -458752, 131072, 2, -393216, 131072, 1, -589823, 1048576, 0, -524287, 1048576, 1, -458751, 1048576, 2, -393215, 1048576, 3, -327679, 1048576, 4, -262143, 1048576, 5, -196607, 1048576, 6, -131071, 1048576, 7, -65535, 1048576, 3, 1, 1048576, 4, 65537, 1048576, 5, 131073, 1048576, 2, 196609, 1048576, 3, 262145, 1048576, 4, 327681, 1048576, 5, 393217, 1048576, 6, 458753, 1048576, 7, 524289, 1048576, 8, -262146, 0, 2, -196610, 0, 3, -262145, 65536, 2, -196609, 65536, 3, -327680, 131072, 2, -262144, 131072, 3, -131074, 0, 1, -65538, 0, 2, -2, 0, 3, -131073, 65536, 1, -65537, 65536, 2, -1, 65536, 3, -196608, 131072, 1, -131072, 131072, 2, -65536, 131072, 3, 65534, 0, 1, 131070, 0, 2, 196606, 0, 3, 65535, 65536, 1, 131071, 65536, 2, 196607, 65536, 3, 0, 131072, 1, 65536, 131072, 2, 131072, 131072, 3, 262142, 0, 1, 327678, 0, 2, 393214, 0, 3, 262143, 65536, 1, 327679, 65536, 2, 393215, 65536, 3, 196608, 131072, 1, 262144, 131072, 2, 327680, 131072, 3, 458750, 0, 1, 524286, 0, 2, 589822, 524288, 4, 458751, 65536, 1, 524287, 65536, 2, 589823, 589824, 4, 393216, 131072, 1, 458752, 131072, 2, 524288, 655360, 4, 65533, 983040, 4, 131069, 983040, 1, 196605, 983040, 2, 262141, 983040, 3, 327677, 983040, 4, 393213, 983040, 5, 458749, 983040, 6, 524285, 983040, 7, 589821, 983040, 8, -524291, 983040, 0, -458755, 983040, 1, -393219, 983040, 2, -327683, 983040, 3, -262147, 983040, 4, -196611, 983040, 5, -131075, 983040, 6, -65539, 983040, 2, -3, 983040, 3)
 
 [node name="Enemy4" type="StaticBody2D" parent="."]
-position = Vector2(674, 13)
+position = Vector2(403, -477)
+script = ExtResource("2_8digk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy4"]
 position = Vector2(-3.5, 42)
@@ -1970,8 +1912,18 @@ position = Vector2(-4.2975, 41)
 scale = Vector2(-78.2983, 41.4331)
 mesh = SubResource("QuadMesh_b3kek")
 
+[node name="Area2D" type="Area2D" parent="Enemy4"]
+position = Vector2(0, -220)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy4/Area2D"]
+position = Vector2(2, 259)
+shape = SubResource("CircleShape2D_dkkec")
+
 [node name="Enemy5" type="StaticBody2D" parent="."]
-position = Vector2(-497, 291)
+position = Vector2(1439, 248)
+script = ExtResource("2_8digk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy5"]
 position = Vector2(-3.5, 42)
@@ -1981,3 +1933,29 @@ shape = SubResource("RectangleShape2D_13dug")
 position = Vector2(-4.2975, 41)
 scale = Vector2(-78.2983, 41.4331)
 mesh = SubResource("QuadMesh_b3kek")
+
+[node name="Area2D" type="Area2D" parent="Enemy5"]
+position = Vector2(-8, -214)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy5/Area2D"]
+position = Vector2(2, 259)
+shape = SubResource("CircleShape2D_dkkec")
+
+[node name="Enities" type="Node2D" parent="."]
+
+[node name="Player" parent="Enities" instance=ExtResource("1_httnd")]
+position = Vector2(648, 889)
+can_double_jump = false
+
+[node name="Rope" parent="Enities" groups=["rope"] instance=ExtResource("3_rap7w")]
+visible = false
+
+[connection signal="body_entered" from="End/Area2D" to="End" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Platform4/Enemy4/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Platform4/Enemy4/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="Enemy4/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Enemy4/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_exited"]
+[connection signal="body_entered" from="Enemy5/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Enemy5/Area2D" to="Platform4/Enemy4" method="_on_area_2d_body_exited"]
